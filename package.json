@@ -1,0 +1,22 @@
+{
+  "name": "lemo-form",
+  "description": "Lemo form",
+  "version": "0.2.0",
+  "main": "src/index.js",
+  "author": "Matej Szendi <matej.szendi@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run build"
+  },
+  "dependencies": {
+    "@fortawesome/react-fontawesome": "0.*",
+    "lemo-validator": "0.*",
+    "prop-types": "15.*",
+    "react": "16.*",
+    "react-dom": "16.*",
+    "reactstrap": "6.*"
+  },
+  "files": [
+    "src/"
+  ]
+}
