@@ -2,7 +2,7 @@
 import FormContext from "./FormContext";
 
 // Lemo
-import { DataMap } from "lemo-objects";
+import { DataMap } from "lemo-object";
 
 // PropTypes
 import PropTypes from "prop-types";

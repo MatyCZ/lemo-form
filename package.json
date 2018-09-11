@@ -2,21 +2,59 @@
   "name": "lemo-form",
   "description": "Lemo form",
   "version": "0.2.0",
-  "main": "src/index.js",
   "author": "Matej Szendi <matej.szendi@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MatyCZ/lemo-form"
+  },
+  "keywords": [
+    "bootstrap",
+    "fontawesome",
+    "form",
+    "react",
+    "reactstrap"
+  ],
+  "main": "dist/lemo-form.js",
+  "esnext": "src",
   "scripts": {
-    "build": "npm run build"
+    "build": "webpack --mode=production",
+    "precommit": "npm run prettier",
+    "prepack": "npm run dist",
+    "prettier": "pretty-quick src --staged"
   },
   "dependencies": {
+    "prop-types": "15.*"
+  },
+  "peerDependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.*",
     "@fortawesome/react-fontawesome": "0.*",
+    "lemo-object": "0.*",
     "lemo-validator": "0.*",
-    "prop-types": "15.*",
     "react": "16.*",
     "react-dom": "16.*",
     "reactstrap": "6.*"
   },
+  "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.*",
+    "@fortawesome/react-fontawesome": "0.*",
+    "babel-core": "6.*",
+    "babel-loader": "7.*",
+    "babel-preset-env": "1.*",
+    "babel-preset-react": "6.*",
+    "babel-preset-stage-2": "6.*",
+    "lemo-object": "0.*",
+    "lemo-validator": "0.*",
+    "prettier": "1.*",
+    "react": "16.*",
+    "react-dom": "16.*",
+    "reactstrap": "6.*",
+    "webpack": "4.*",
+    "webpack-cli": "3.*"
+  },
   "files": [
-    "src/"
+    "dist/",
+    "src/",
+    "LICENSE"
   ]
 }
