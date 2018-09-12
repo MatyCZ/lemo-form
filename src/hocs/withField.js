@@ -5,14 +5,14 @@ import withFormApi from './withForm';
 import React from 'react';
 
 const buildFieldApi = (formApi, name) => ({
-  set: field => formApi.set(name, field),
+  set: (field) => formApi.set(name, field),
   remove: () => formApi.remove(name),
   getValue: () => formApi.getValue(name),
-  setValue: value => formApi.setValue(name, value),
+  setValue: (value) => formApi.setValue(name, value),
   getTouched: () => formApi.getTouched(name),
-  setTouched: value => formApi.setTouched(name, value),
+  setTouched: (value) => formApi.setTouched(name, value),
   getError: () => formApi.getError(name),
-  setError: value => formApi.setError(name, value)
+  setError: (value) => formApi.setError(name, value)
 });
 
 const buildFieldState = (formApi, name) => {
@@ -26,7 +26,7 @@ const buildFieldState = (formApi, name) => {
   };
 };
 
-const withField = Component =>
+const withField = (Component) =>
   withFormApi(
     class extends React.PureComponent {
       constructor(props) {
@@ -58,12 +58,12 @@ const withField = Component =>
     }
   );
 
-const withFieldApi = field => Component =>
+const withFieldApi = (field) => (Component) =>
   withFormApi(({ formApi, ...props }) => (
     <Component fieldApi={buildFieldApi(formApi, field)} {...props} />
   ));
 
-const withFieldState = field => Component =>
+const withFieldState = (field) => (Component) =>
   withFormApi(({ formApi, ...props }) => (
     <Component fieldState={buildFieldState(formApi, field)} {...props} />
   ));

@@ -59,7 +59,7 @@ class Form extends React.Component {
     if (field.props.disabledIfInvalid.length > 0) {
       this.fieldsDisabledIfNotValid.set(name, field.props.disabledIfInvalid);
 
-      field.props.disabledIfInvalid.forEach(fieldToCheck => {
+      field.props.disabledIfInvalid.forEach((fieldToCheck) => {
         if (!this.fieldsTriggerDisabled.has(fieldToCheck)) {
           this.fieldsTriggerDisabled.set(fieldToCheck, []);
         }
@@ -217,12 +217,12 @@ class Form extends React.Component {
 
     // Disabled if not valid
     if (this.fieldsTriggerDisabled.has(name)) {
-      await this.fieldsTriggerDisabled.get(name).forEach(nameToDisable => {
+      await this.fieldsTriggerDisabled.get(name).forEach((nameToDisable) => {
         if (this.fieldsDisabledIfNotValid.has(nameToDisable)) {
           let isValid = true;
           this.fieldsDisabledIfNotValid
             .get(nameToDisable)
-            .forEach(nameToCheckValue => {
+            .forEach((nameToCheckValue) => {
               if (true === isValid && this.errors.has(nameToCheckValue)) {
                 isValid = false;
               }
@@ -252,7 +252,7 @@ class Form extends React.Component {
 
       // Is some field filled?
       let isRequired = false;
-      namesToCheck.forEach(nameToCheck => {
+      namesToCheck.forEach((nameToCheck) => {
         if (false === isRequired) {
           if (!!this.values.get(nameToCheck)) {
             isRequired = true;
@@ -347,12 +347,12 @@ class Form extends React.Component {
 
       // Disabled if not valid
       if (this.fieldsTriggerDisabled.has(name)) {
-        await this.fieldsTriggerDisabled.get(name).forEach(nameToDisable => {
+        await this.fieldsTriggerDisabled.get(name).forEach((nameToDisable) => {
           if (this.fieldsDisabledIfNotValid.has(nameToDisable)) {
             let isValid = true;
             this.fieldsDisabledIfNotValid
               .get(nameToDisable)
-              .forEach(nameToCheckValue => {
+              .forEach((nameToCheckValue) => {
                 if (true === isValid && this.errors.has(nameToCheckValue)) {
                   isValid = false;
                 }
@@ -382,7 +382,7 @@ class Form extends React.Component {
 
         // Is some field filled?
         let isRequired = false;
-        namesToCheck.forEach(nameToCheck => {
+        namesToCheck.forEach((nameToCheck) => {
           if (false === isRequired) {
             if (!!this.values.get(nameToCheck)) {
               isRequired = true;
@@ -470,11 +470,11 @@ class Form extends React.Component {
     if (field.state.visible) {
       value = value || '';
 
-      field.props.validators.forEach(validator => {
+      field.props.validators.forEach((validator) => {
         if (null === error) {
           error = validator.validate(value.trim(), this.getValues());
 
-          field.props.validateIfChange.forEach(nameToValidate => {
+          field.props.validateIfChange.forEach((nameToValidate) => {
             if (
               nameToValidate !== validateWithSkip &&
               this.fields.has(nameToValidate)

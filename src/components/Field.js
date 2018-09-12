@@ -180,7 +180,7 @@ class Field extends React.Component {
   renderOptions() {
     const { options, optionsKey, optionsValue } = this.props;
 
-    return options.map(option => (
+    return options.map((option) => (
       <option key={option[optionsKey]} value={option[optionsKey]}>
         {option[optionsValue]}
       </option>
