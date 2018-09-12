@@ -1,30 +1,26 @@
 // PropTypes
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 // React
-import React from "react";
+import React from 'react';
 
 // Reactstrap
-import { FormText } from "reactstrap";
+import { FormText } from 'reactstrap';
 
 class FieldText extends React.Component {
-    render() {
-        const text = this.props.text;
+  render() {
+    const text = this.props.text;
 
-        if (!text) {
-            return "";
-        }
-
-        return (
-            <FormText>
-                {text}
-            </FormText>
-        );
+    if (!text) {
+      return '';
     }
+
+    return <FormText>{text}</FormText>;
+  }
 }
 
 FieldText.propTypes = {
-    text: PropTypes.string,
+  text: PropTypes.string
 };
 
 export default FieldText;

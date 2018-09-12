@@ -1,30 +1,26 @@
 // PropTypes
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 // React
-import React from "react";
+import React from 'react';
 
 // Reactstrap
-import { FormFeedback } from "reactstrap";
+import { FormFeedback } from 'reactstrap';
 
 class FieldFeedback extends React.Component {
-    render() {
-        const error = this.props.error;
+  render() {
+    const error = this.props.error;
 
-        if (!error) {
-            return "";
-        }
-
-        return (
-            <FormFeedback>
-                {error}
-            </FormFeedback>
-        );
+    if (!error) {
+      return '';
     }
+
+    return <FormFeedback>{error}</FormFeedback>;
+  }
 }
 
 FieldFeedback.propTypes = {
-    error: PropTypes.string,
+  error: PropTypes.string
 };
 
 export default FieldFeedback;

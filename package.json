@@ -1,7 +1,7 @@
 {
   "name": "lemo-form",
   "description": "Lemo form",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "author": "Matej Szendi <matej.szendi@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -15,46 +15,55 @@
     "react",
     "reactstrap"
   ],
-  "main": "dist/lemo-form.js",
+  "files": [
+    "LICENSE",
+    "dist",
+    "src"
+  ],
   "esnext": "src",
+  "jsnext:main": "dist/lemo-form.es.js",
+  "jsdelivr": "dist/lemo-form.min.js",
+  "main": "dist/lemo-form.cjs.js",
+  "module": "dist/lemo-form.es.js",
+  "unpkg": "dist/lemo-form.min.js",
   "scripts": {
-    "build": "webpack --mode=production",
-    "precommit": "npm run prettier",
-    "prepack": "npm run dist",
-    "prettier": "pretty-quick src --staged"
+    "build": "rollup -c",
+    "format": "prettier --write 'src/**/*.{js,jsx}'",
+    "format:check": "prettier --list-different 'src/**/*.{js,jsx}'",
+    "precommit": "npm run format"
+  },
+  "engines": {
+    "node": ">=8"
   },
   "dependencies": {
-    "prop-types": "15.*"
+    "lemo-object": "0.x",
+    "lemo-validator": "0.x"
   },
   "peerDependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.*",
-    "@fortawesome/react-fontawesome": "0.*",
-    "lemo-object": "0.*",
-    "lemo-validator": "0.*",
-    "react": "16.*",
-    "react-dom": "16.*",
-    "reactstrap": "6.*"
+    "@fortawesome/fontawesome-svg-core": "1.x",
+    "@fortawesome/react-fontawesome": "0.x",
+    "prop-types": "15.x",
+    "react": "16.x",
+    "react-dom": "16.x",
+    "reactstrap": "6.x"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.*",
-    "@fortawesome/react-fontawesome": "0.*",
-    "babel-core": "6.*",
-    "babel-loader": "7.*",
-    "babel-preset-env": "1.*",
-    "babel-preset-react": "6.*",
-    "babel-preset-stage-2": "6.*",
-    "lemo-object": "0.*",
-    "lemo-validator": "0.*",
-    "prettier": "1.*",
-    "react": "16.*",
-    "react-dom": "16.*",
-    "reactstrap": "6.*",
-    "webpack": "4.*",
-    "webpack-cli": "3.*"
-  },
-  "files": [
-    "dist/",
-    "src/",
-    "LICENSE"
-  ]
+    "babel-core": "6.x",
+    "babel-plugin-external-helpers": "6.x",
+    "babel-plugin-transform-object-rest-spread": "6.x",
+    "babel-plugin-transform-runtime": "6.x",
+    "babel-preset-env": "1.x",
+    "babel-preset-react": "6.x",
+    "babel-preset-stage-3": "6.x",
+    "prettier": "1.x",
+    "prop-types": "15.x",
+    "react": "16.x",
+    "react-dom": "16.x",
+    "reactstrap": "6.x",
+    "rollup": "0.65.x",
+    "rollup-plugin-babel": "3.x",
+    "rollup-plugin-babel-minify": "5.x",
+    "rollup-plugin-commonjs": "9.x",
+    "rollup-plugin-node-resolve": "3.x"
+  }
 }
