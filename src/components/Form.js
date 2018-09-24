@@ -43,7 +43,7 @@ class Form extends React.Component {
     this.getValue = this.getValue.bind(this);
     this.getValues = this.getValues.bind(this);
     this.has = this.has.bind(this);
-    this.handleChangeValue = this.handleChangeValue.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.remove = this.remove.bind(this);
     this.set = this.set.bind(this);
@@ -115,7 +115,7 @@ class Form extends React.Component {
     this.values.set(name, value);
 
     if (this.fields.has(name)) {
-      this.handleChangeValue(name, value);
+      this.handleChange(name, value);
     }
   }
 
@@ -163,12 +163,22 @@ class Form extends React.Component {
     return this.values;
   }
 
-  async handleChangeValue(name, value) {
+  async handleChange(name, value) {
     const field = this.fields.get(name);
 
     if (value === field.state.value) {
       return false;
     }
+
+    // Filled
+    if ('' === value || null === value) {
+      this.filled.delete(name);
+    } else {
+      this.filled.set(name, true);
+    }
+
+    // Touched
+    this.touched.set(name, true);
 
     // Validation
     if (true === field.props.validateOnChange) {
@@ -293,135 +303,6 @@ class Form extends React.Component {
     field.updateState();
   }
 
-  async handleChange(name, value) {
-    value = value || '';
-
-    // Filled
-    if ('' === value || null === value) {
-      this.filled.delete(name);
-    } else {
-      this.filled.set(name, true);
-    }
-
-    // Touched
-    this.touched.set(name, true);
-
-    // Value
-    this.values.set(name, value);
-
-    if (this.fields.has(name)) {
-      const field = this.fields.get(name);
-
-      // Validation
-      if (true === field.props.validateOnChange) {
-        const error = this.handleValidate(name, value);
-
-        if (null === error) {
-          this.errors.delete(name);
-        } else {
-          this.errors.set(name, error);
-        }
-      }
-
-      field.setState({
-        error: this.errors.get(name) || null,
-        value: value
-      });
-
-      // On change
-      if (
-        field.props.hasOwnProperty('onChange') &&
-        typeof field.props.onChange === 'function'
-      ) {
-        field.props.onChange(name, value, this.values.object);
-      }
-
-      // On change if valid
-      if (
-        field.props.hasOwnProperty('onChangeIfValid') &&
-        typeof field.props.onChangeIfValid === 'function' &&
-        !this.errors.get(name)
-      ) {
-        field.props.onChangeIfValid(name, value, this.values.object);
-      }
-
-      // Disabled if not valid
-      if (this.fieldsTriggerDisabled.has(name)) {
-        await this.fieldsTriggerDisabled.get(name).forEach((nameToDisable) => {
-          if (this.fieldsDisabledIfNotValid.has(nameToDisable)) {
-            let isValid = true;
-            this.fieldsDisabledIfNotValid
-              .get(nameToDisable)
-              .forEach((nameToCheckValue) => {
-                if (true === isValid && this.errors.has(nameToCheckValue)) {
-                  isValid = false;
-                }
-              });
-
-            if (true === isValid) {
-              this.fields.get(nameToDisable).setState({
-                disabled: false
-              });
-            } else {
-              this.errors.delete(nameToDisable);
-              this.values.set(nameToDisable, '');
-              this.fields.get(nameToDisable).setState({
-                error: null,
-                disabled: true,
-                options: [],
-                value: ''
-              });
-            }
-          }
-        });
-      }
-
-      // Required if not empty
-      if (this.fieldsRequiredIfNotEmpty.has(name)) {
-        const namesToCheck = this.fieldsRequiredIfNotEmpty.get(name);
-
-        // Is some field filled?
-        let isRequired = false;
-        namesToCheck.forEach((nameToCheck) => {
-          if (false === isRequired) {
-            if (!!this.values.get(nameToCheck)) {
-              isRequired = true;
-            }
-          }
-        });
-
-        // Change state of fields
-        await this.fieldsRequiredIfNotEmpty.forEach((field, nameToChange) => {
-          if (this.fields.has(nameToChange)) {
-            const fieldToChange = this.fields.get(nameToChange);
-
-            if (fieldToChange.state.required !== isRequired) {
-              if (true === isRequired) {
-                fieldToChange.setState({
-                  required: isRequired,
-                  validatorsEnabled: isRequired
-                });
-              } else {
-                fieldToChange.setState({
-                  error: null,
-                  required: isRequired,
-                  validatorsEnabled: isRequired
-                });
-              }
-            }
-          }
-        });
-      }
-
-      if (
-        this.props.hasOwnProperty('onChange') &&
-        typeof this.props.onChange === 'function'
-      ) {
-        this.props.onChange(this.values.object, name, value);
-      }
-    }
-  }
-
   async handleSubmit(e) {
     e.preventDefault(e);
 
@@ -462,11 +343,6 @@ class Form extends React.Component {
     if (false === field.state.validatorsEnabled) {
       return null;
     }
-
-    if (null === value) {
-      value = field.state.value;
-    }
-
     if (field.state.visible) {
       value = value || '';
 
