@@ -6,7 +6,7 @@ import FieldLabel from './FieldLabel';
 import FieldText from './FieldText';
 
 // HOC
-import withForm from './../hocs/withForm';
+import withFormApi from '../hocs/withFormApi';
 
 // PropTypes
 import PropTypes from 'prop-types';
@@ -116,6 +116,7 @@ class Field extends React.Component {
       addonAppendText,
       addonPrependIcon,
       addonPrependText,
+      disabledIfEmptyOptions,
       label,
       name,
       optionsEmpty,
@@ -123,7 +124,9 @@ class Field extends React.Component {
       type
     } = this.props;
 
-    const { disabled, error, required, visible, value } = this.state;
+    const { error, options, required, visible } = this.state;
+
+    let { disabled, value } = this.state;
 
     if (!visible) {
       return '';
@@ -132,6 +135,14 @@ class Field extends React.Component {
     let field = null;
     switch (type) {
       case 'select':
+        if (true === disabledIfEmptyOptions && 0 === options.length) {
+          disabled = true;
+        }
+
+        if (0 === options.length) {
+          value = '';
+        }
+
         field = (
           <Input
             disabled={disabled}
@@ -197,7 +208,7 @@ Field.defaultProps = {
   disabledIfEmptyOptions: true,
   disabledIfInvalid: [],
   options: [],
-  optionsEmpty: false,
+  optionsEmpty: true,
   required: false,
   requiredIfNotEmpty: [],
   text: null,
@@ -251,4 +262,4 @@ Field.propTypes = {
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
-export default withForm(Field);
+export default withFormApi(Field);

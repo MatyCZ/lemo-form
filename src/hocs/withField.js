@@ -1,5 +1,5 @@
 // HOC
-import withFormApi from './withForm';
+import withFormApi from './withFormApi';
 
 // React
 import React from 'react';

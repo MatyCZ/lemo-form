@@ -7,7 +7,7 @@ import FieldText from './components/FieldText';
 import Form from './components/Form';
 import FormContext from './components/FormContext';
 import { withField, withFieldApi, withFieldState } from './hocs/withField';
-import withForm from './hocs/withForm';
+import withFormApi from './hocs/withFormApi';
 
 export {
   Field,
@@ -21,5 +21,5 @@ export {
   withField,
   withFieldApi,
   withFieldState,
-  withForm
+  withFormApi
 };

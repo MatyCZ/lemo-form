@@ -17,6 +17,8 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
 
+    const { values } = props;
+
     this.state = {
       isHighlightingErrors: false,
       isSubmitting: false
@@ -24,14 +26,14 @@ class Form extends React.Component {
 
     this.errors = new DataMap();
     this.fields = new Map();
-    this.fieldsDisabledIfNotValid = new Map();
+    this.fieldsDisabledIfInvalid = new Map();
     this.fieldsRequiredIfNotEmpty = new Map();
     this.fieldsTriggerDisabled = new Map();
     this.filled = new DataMap();
     this.touched = new DataMap();
-    this.values = new DataMap(props.values);
+    this.values = new DataMap(values);
 
-    if (props.hasOwnProperty('onInit')) {
+    if (props.onInit) {
       props.onInit(this);
     }
 
@@ -57,7 +59,7 @@ class Form extends React.Component {
 
     // Disabled if not valid
     if (field.props.disabledIfInvalid.length > 0) {
-      this.fieldsDisabledIfNotValid.set(name, field.props.disabledIfInvalid);
+      this.fieldsDisabledIfInvalid.set(name, field.props.disabledIfInvalid);
 
       field.props.disabledIfInvalid.forEach((fieldToCheck) => {
         if (!this.fieldsTriggerDisabled.has(fieldToCheck)) {
@@ -228,9 +230,9 @@ class Form extends React.Component {
     // Disabled if not valid
     if (this.fieldsTriggerDisabled.has(name)) {
       await this.fieldsTriggerDisabled.get(name).forEach((nameToDisable) => {
-        if (this.fieldsDisabledIfNotValid.has(nameToDisable)) {
+        if (this.fieldsDisabledIfInvalid.has(nameToDisable)) {
           let isValid = true;
-          this.fieldsDisabledIfNotValid
+          this.fieldsDisabledIfInvalid
             .get(nameToDisable)
             .forEach((nameToCheckValue) => {
               if (true === isValid && this.errors.has(nameToCheckValue)) {
@@ -373,9 +375,13 @@ class Form extends React.Component {
     return error;
   }
 
-  render() {
-    const context = {
-      form: {
+  get formClassName() {
+    return this.state.isHighlightingErrors ? 'invalid-highlight' : null;
+  }
+
+  get formContext() {
+    return {
+      formApi: {
         get: this.get,
         getError: this.getError,
         getErrors: this.getErrors,
@@ -392,17 +398,46 @@ class Form extends React.Component {
         setValue: this.setValue
       }
     };
+  }
+
+  get content() {
+    const { children, component, render } = this.props;
+
+    const props = this.formContext;
+
+    if (component) {
+      return React.createElement(component, props, children);
+    }
+    if (render) {
+      return render(props);
+    }
+    if (typeof children === 'function') {
+      return children(props);
+    }
+    return children;
+  }
+
+  render() {
+    const {
+      children,
+      component,
+      render,
+      noValidate,
+      onChange,
+      onInit,
+      onSubmit,
+      values,
+      ...rest
+    } = this.props;
 
     return (
-      <FormContext.Provider value={context}>
+      <FormContext.Provider value={this.formContext}>
         <ReactstrapForm
-          className={
-            this.state.isHighlightingErrors ? 'invalid-highlight' : null
-          }
+          {...rest}
+          className={this.formClassName}
           onSubmit={this.handleSubmit}
-          noValidate={this.props.noValidate}
         >
-          {this.props.children}
+          {this.content}
         </ReactstrapForm>
       </FormContext.Provider>
     );
