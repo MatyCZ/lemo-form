@@ -17,8 +17,6 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
 
-    const { values } = props;
-
     this.state = {
       isHighlightingErrors: false,
       isSubmitting: false
@@ -31,7 +29,7 @@ class Form extends React.Component {
     this.fieldsTriggerDisabled = new Map();
     this.filled = new DataMap();
     this.touched = new DataMap();
-    this.values = new DataMap(values);
+    this.values = new DataMap(props.values);
 
     if (props.onInit) {
       props.onInit(this);
@@ -52,6 +50,20 @@ class Form extends React.Component {
     this.setError = this.setError.bind(this);
     this.setTouched = this.setTouched.bind(this);
     this.setValue = this.setValue.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+      if (nextProps.values !== this.props.values) {
+          this.values = new DataMap(nextProps.values);
+
+          for (let name in nextProps.values) {
+              if (this.fields.has(name)) {
+                  this.fields.get(name).setState({
+                      value: nextProps.values[name]
+                  });
+              }
+          }
+      }
   }
 
   set(name, field) {

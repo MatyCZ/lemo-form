@@ -1,68 +1,50 @@
 {
   "name": "lemo-form",
   "description": "Lemo form",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "author": "Matej Szendi <matej.szendi@gmail.com>",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MatyCZ/lemo-form"
-  },
   "keywords": [
     "bootstrap",
     "fontawesome",
     "form",
+    "lemo",
     "react",
     "reactstrap"
   ],
-  "files": [
-    "LICENSE",
-    "dist",
-    "src"
-  ],
-  "esnext": "src",
-  "jsnext:main": "dist/lemo-form.es.js",
-  "jsdelivr": "dist/lemo-form.min.js",
-  "main": "dist/lemo-form.cjs.js",
-  "module": "dist/lemo-form.es.js",
-  "unpkg": "dist/lemo-form.min.js",
+  "main": "lib/lemo-form.umd.js",
+  "module": "lib/lemo-form.es.js",
+  "jsnext:main": "lib/lemo-form.es.js",
   "scripts": {
     "build": "rollup -c",
-    "format": "prettier --write 'src/**/*.{js,jsx}'",
-    "format:check": "prettier --list-different 'src/**/*.{js,jsx}'",
-    "precommit": "npm run format"
+    "prettier": "prettier --write 'src/**/*.{js,jsx}'",
+    "prettier:check": "prettier --list-different 'src/**/*.{js,jsx}'"
   },
-  "engines": {
-    "node": ">=8"
+  "files": [
+    "lib",
+    "src",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MatyCZ/lemo-form"
   },
   "dependencies": {
-    "lemo-object": "0.x",
-    "lemo-validator": "0.x"
-  },
-  "peerDependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.x",
     "@fortawesome/react-fontawesome": "0.x",
+    "lemo-object": "0.x",
+    "lemo-validator": "0.x",
     "prop-types": "15.x",
     "react": "16.x",
     "react-dom": "16.x",
     "reactstrap": "6.x"
   },
   "devDependencies": {
-    "babel-core": "6.x",
-    "babel-plugin-external-helpers": "6.x",
-    "babel-plugin-transform-object-rest-spread": "6.x",
-    "babel-plugin-transform-runtime": "6.x",
-    "babel-preset-env": "1.x",
-    "babel-preset-react": "6.x",
-    "babel-preset-stage-3": "6.x",
+    "@babel/core": "7.x",
+    "@babel/preset-env": "7.x",
+    "@babel/preset-react": "7.x",
     "prettier": "1.x",
-    "prop-types": "15.x",
-    "react": "16.x",
-    "react-dom": "16.x",
-    "reactstrap": "6.x",
-    "rollup": "0.65.x",
-    "rollup-plugin-babel": "3.x",
-    "rollup-plugin-babel-minify": "5.x",
+    "rollup": "0.66.x",
+    "rollup-plugin-babel": "^4.0.1",
     "rollup-plugin-commonjs": "9.x",
     "rollup-plugin-node-resolve": "3.x"
   }
