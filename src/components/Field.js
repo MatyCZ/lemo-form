@@ -54,7 +54,6 @@ class Field extends React.Component {
       });
     }
     if (nextProps.error !== this.props.error) {
-      console.log('Nastavovat pouze pres Form');
       this.setState({
         error: nextProps.error
       });
@@ -75,7 +74,6 @@ class Field extends React.Component {
       });
     }
     if (nextProps.value !== this.props.value) {
-      console.log('Nastavovat pouze pres Form');
       this.setState({
         value: nextProps.value
       });
@@ -238,12 +236,14 @@ Field.propTypes = {
   disabled: PropTypes.bool,
   disabledIfEmptyOptions: PropTypes.bool,
   disabledIfInvalid: PropTypes.array,
+  error: PropTypes.string,
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onBlur: PropTypes.func,
   onBlurIfValid: PropTypes.func,
   onChange: PropTypes.func,
   onChangeIfValid: PropTypes.func,
+  onNormalize: PropTypes.func,
   options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   optionsEmpty: PropTypes.bool,
   optionsKey: PropTypes.string,

@@ -27,7 +27,6 @@ class Form extends React.Component {
     this.fieldsDisabledIfInvalid = new Map();
     this.fieldsRequiredIfNotEmpty = new Map();
     this.fieldsTriggerDisabled = new Map();
-    this.filled = new DataMap();
     this.touched = new DataMap();
     this.values = new DataMap(props.values);
 
@@ -38,7 +37,6 @@ class Form extends React.Component {
     this.get = this.get.bind(this);
     this.getError = this.getError.bind(this);
     this.getErrors = this.getErrors.bind(this);
-    this.getFilled = this.getFilled.bind(this);
     this.getTouched = this.getTouched.bind(this);
     this.getValue = this.getValue.bind(this);
     this.getValues = this.getValues.bind(this);
@@ -56,12 +54,24 @@ class Form extends React.Component {
       if (nextProps.values !== this.props.values) {
           this.values = new DataMap(nextProps.values);
 
-          for (let name in nextProps.values) {
-              if (this.fields.has(name)) {
-                  this.fields.get(name).setState({
-                      value: nextProps.values[name]
+          if (0 === Object.keys(nextProps.values).length) {
+              this.fields.forEach((field) => {
+                  field.setState({
+                      error: null,
+                      touched: false,
+                      value: ""
                   });
-              }
+              });
+          } else {
+              this.fields.forEach((field) => {
+                  let fieldName = field.props.name;
+
+                  if (nextProps.values.hasOwnProperty(fieldName)) {
+                      field.setState({
+                          value: nextProps.values[fieldName]
+                      });
+                  }
+              });
           }
       }
   }
@@ -153,18 +163,6 @@ class Form extends React.Component {
     return this.errors;
   }
 
-  getFilled(name = null) {
-    if (null !== name) {
-      if (this.filled.has(name)) {
-        return this.filled.get(name);
-      }
-
-      return null;
-    }
-
-    return this.filled;
-  }
-
   getTouched(name) {
     if (!this.touched.has(name)) {
       return null;
@@ -180,15 +178,21 @@ class Form extends React.Component {
   async handleChange(name, value) {
     const field = this.fields.get(name);
 
-    if (value === field.state.value) {
-      return false;
+    // On normalize
+    if (
+        field.props.hasOwnProperty('onNormalize') &&
+        typeof field.props.onNormalize === 'function'
+    ) {
+        value = field.props.onNormalize(
+            value,
+            field.state.value
+        );
+
+        this.values.set(name, value);
     }
 
-    // Filled
-    if ('' === value || null === value) {
-      this.filled.delete(name);
-    } else {
-      this.filled.set(name, true);
+    if (value === field.state.value) {
+      return false;
     }
 
     // Touched
@@ -397,7 +401,6 @@ class Form extends React.Component {
         get: this.get,
         getError: this.getError,
         getErrors: this.getErrors,
-        getFilled: this.getFilled,
         getTouched: this.getTouched,
         getValue: this.getValue,
         getValues: this.getValues,
@@ -447,6 +450,8 @@ class Form extends React.Component {
         <ReactstrapForm
           {...rest}
           className={this.formClassName}
+          noValidate={noValidate}
+          onChange={this.onChange}
           onSubmit={this.handleSubmit}
         >
           {this.content}
