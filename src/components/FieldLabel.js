@@ -1,11 +1,11 @@
 // PropTypes
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 // React
-import React from 'react';
+import React from "react";
 
 // Reactstrap
-import { Label } from 'reactstrap';
+import { Label } from "reactstrap";
 
 const defaultProps = {
   required: false
@@ -22,7 +22,7 @@ class FieldLabel extends React.Component {
     const { name, required, text } = this.props;
 
     if (!text) {
-      return '';
+      return "";
     }
 
     if (!required) {

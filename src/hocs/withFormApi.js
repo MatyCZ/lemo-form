@@ -1,10 +1,10 @@
 // Components
-import FormContext from '../components/FormContext';
+import FormContext from "../components/FormContext";
 
 // React
-import React from 'react';
+import React from "react";
 
-const withFormApi = (Component) =>
+const withFormApi = Component =>
   React.forwardRef((props, ref) => (
     <FormContext.Consumer>
       {({ formApi }) => <Component formApi={formApi} ref={ref} {...props} />}

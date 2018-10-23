@@ -1,21 +1,21 @@
 // Components
-import FieldAddonAppend from './FieldAddonAppend';
-import FieldAddonPrepend from './FieldAddonPrepend';
-import FieldFeedback from './FieldFeedback';
-import FieldLabel from './FieldLabel';
-import FieldText from './FieldText';
+import FieldAddonAppend from "./FieldAddonAppend";
+import FieldAddonPrepend from "./FieldAddonPrepend";
+import FieldFeedback from "./FieldFeedback";
+import FieldLabel from "./FieldLabel";
+import FieldText from "./FieldText";
 
 // HOC
-import withFormApi from '../hocs/withFormApi';
+import withFormApi from "../hocs/withFormApi";
 
 // PropTypes
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 // React
-import React from 'react';
+import React from "react";
 
 // Reactstrap
-import { FormGroup, Input, InputGroup } from 'reactstrap';
+import { FormGroup, Input, InputGroup } from "reactstrap";
 
 class Field extends React.Component {
   constructor(props) {
@@ -38,13 +38,13 @@ class Field extends React.Component {
   componentDidMount() {
     const { formApi } = this.props;
 
-    formApi.set(this.props.name, this);
+    formApi.setField(this.props.name, this);
   }
 
   componentWillUnmount() {
     const { formApi } = this.props;
 
-    formApi.remove(this.props.name);
+    formApi.removeField(this.props.name);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -85,27 +85,24 @@ class Field extends React.Component {
     }
   }
 
-  updateState() {
-    const { formApi } = this.props;
-
-    this.setState({
-      ...this.state,
-      error: formApi.getError(this.props.name),
-      touched: formApi.getTouched(this.props.name),
-      value: formApi.getValue(this.props.name)
-    });
-  }
-
   handleBlur(e) {
     const { formApi } = this.props;
 
-    formApi.setValue(e.target.name, e.target.value);
+    if ("file" === this.props.type) {
+      formApi.setValue(e.target.name + "Metadata", e.target.files[0]);
+    }
+
+    formApi.handleOnBlur(e.target.name, e.target.value);
   }
 
   handleChange(e) {
     const { formApi } = this.props;
 
-    formApi.setValue(e.target.name, e.target.value);
+    if ("file" === this.props.type) {
+      formApi.setValue(e.target.name + "Metadata", e.target.files[0]);
+    }
+
+    formApi.handleOnChange(e.target.name, e.target.value);
   }
 
   render() {
@@ -127,18 +124,18 @@ class Field extends React.Component {
     let { disabled, value } = this.state;
 
     if (!visible) {
-      return '';
+      return "";
     }
 
     let field = null;
     switch (type) {
-      case 'select':
+      case "select":
         if (true === disabledIfEmptyOptions && 0 === options.length) {
           disabled = true;
         }
 
         if (0 === options.length) {
-          value = '';
+          value = "";
         }
 
         field = (
@@ -150,7 +147,7 @@ class Field extends React.Component {
             onChange={this.handleChange}
             required={required}
             type={type}
-            value={value || ''}
+            value={value || ""}
           >
             {optionsEmpty && <option value="">-</option>}
             {this.renderOptions()}
@@ -167,7 +164,7 @@ class Field extends React.Component {
             onChange={this.handleChange}
             required={required}
             type={type}
-            value={!value && value !== 0 ? '' : value}
+            value={!value && value !== 0 ? "" : value}
           />
         );
     }
@@ -189,7 +186,7 @@ class Field extends React.Component {
   renderOptions() {
     const { options, optionsKey, optionsValue } = this.props;
 
-    return options.map((option) => (
+    return options.map(option => (
       <option key={option[optionsKey]} value={option[optionsKey]}>
         {option[optionsValue]}
       </option>
@@ -211,12 +208,12 @@ Field.defaultProps = {
   requiredIfNotEmpty: [],
   text: null,
   touched: false,
-  type: 'text',
+  type: "text",
   validateIfChange: [],
   validateOnChange: true,
   validators: [],
   validatorsEnabled: true,
-  value: '',
+  value: "",
   visible: true
 };
 
@@ -244,6 +241,7 @@ Field.propTypes = {
   onChange: PropTypes.func,
   onChangeIfValid: PropTypes.func,
   onNormalize: PropTypes.func,
+  onValidate: PropTypes.func,
   options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   optionsEmpty: PropTypes.bool,
   optionsKey: PropTypes.string,
