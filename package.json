@@ -1,7 +1,7 @@
 {
   "name": "lemo-form",
   "description": "Lemo form",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "author": "Matej Szendi <matej.szendi@gmail.com>",
   "license": "MIT",
   "keywords": [
@@ -43,7 +43,7 @@
     "@babel/preset-env": "7.x",
     "@babel/preset-react": "7.x",
     "prettier": "1.x",
-    "rollup": "0.66.x",
+    "rollup": "0.67.x",
     "rollup-plugin-babel": "4.x",
     "rollup-plugin-commonjs": "9.x",
     "rollup-plugin-node-resolve": "3.x"

@@ -427,7 +427,7 @@ class Form extends React.Component {
 
     if (field.state.visible) {
       field.props.validators.forEach(validator => {
-        if (null === error) {
+        if (null === error && value) {
           error = validator.validate(value.trim(), this.values);
 
           field.props.validateIfChange.forEach(nameToValidate => {
