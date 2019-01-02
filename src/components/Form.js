@@ -419,7 +419,7 @@ class Form extends React.Component {
   handleValidate(name, nameToSkip = null, isRecursive = false) {
     let error = null;
     let field = this.fields.get(name);
-    let value = this.values.get(name) || '';
+    let value = this.values.get(name) || "";
 
     if (false === field.state.validatorsEnabled) {
       return null;
