@@ -64,12 +64,12 @@ class Form extends React.Component {
           field.setState({
             error: null,
             touched: false,
-            value: ""
+            value: null
           });
         });
       } else {
         this.fields.forEach(field => {
-          let fieldName = field.props.name;
+          let fieldName = field.state.name;
 
           if (nextProps.values.hasOwnProperty(fieldName)) {
             field.setState({
@@ -176,6 +176,13 @@ class Form extends React.Component {
     // Required if not empty
     if (field.props.requiredIfNotEmpty.length > 0) {
       this.fieldsRequiredIfNotEmpty.set(name, field.props.requiredIfNotEmpty);
+    }
+
+    if ("checkbox" === field.state.type) {
+      this.values.set(name, false);
+    }
+    if ("multicheckbox" === field.state.type) {
+      this.values.set(name, []);
     }
 
     // Default value
@@ -310,7 +317,7 @@ class Form extends React.Component {
 
     if (!this.fields.has(name)) {
       this.values.set(name, value);
-      return this;
+      return false;
     }
 
     const field = this.fields.get(name);
@@ -323,9 +330,12 @@ class Form extends React.Component {
       value = field.props.onNormalize(value, field.state.value);
     }
 
-    // Value is the same
-    if (value === field.state.value) {
-      return false;
+    // Default value for specific field types
+    if ("checkbox" === field.state.type && true !== value) {
+      value = false;
+    }
+    if ("multicheckbox" === field.state.type && !Array.isArray(value)) {
+      value = [];
     }
 
     // Set value
@@ -425,10 +435,17 @@ class Form extends React.Component {
       return null;
     }
 
+    if (
+      "checkbox" !== field.state.type &&
+      "multicheckbox" !== field.state.type
+    ) {
+      value = value.trim();
+    }
+
     if (field.state.visible) {
       field.props.validators.forEach(validator => {
         if (null === error) {
-          error = validator.validate(value.trim(), this.values);
+          error = validator.validate(value, this.values);
 
           field.props.validateIfChange.forEach(nameToValidate => {
             if (

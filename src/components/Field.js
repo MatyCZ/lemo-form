@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import React from "react";
 
 // Reactstrap
-import { FormGroup, Input, InputGroup } from "reactstrap";
+import { CustomInput, FormGroup, Input, InputGroup } from "reactstrap";
 
 class Field extends React.Component {
   constructor(props) {
@@ -23,11 +23,15 @@ class Field extends React.Component {
 
     this.state = {
       disabled: props.disabled,
-      error: props.formApi.getError(props.name),
+      error: props.error,
+      label: props.label,
+      name: props.name,
       options: props.options,
       required: props.required,
       validatorsEnabled: props.validatorsEnabled,
-      value: props.formApi.getValue(props.name),
+      value: props.value,
+      text: props.text,
+      type: props.type,
       visible: props.visible
     };
 
@@ -38,13 +42,13 @@ class Field extends React.Component {
   componentDidMount() {
     const { formApi } = this.props;
 
-    formApi.setField(this.props.name, this);
+    formApi.setField(this.state.name, this);
   }
 
   componentWillUnmount() {
     const { formApi } = this.props;
 
-    formApi.removeField(this.props.name);
+    formApi.removeField(this.state.name);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,6 +62,11 @@ class Field extends React.Component {
         error: nextProps.error
       });
     }
+    if (nextProps.label !== this.props.label) {
+      this.setState({
+        label: nextProps.label
+      });
+    }
     if (nextProps.options !== this.props.options) {
       this.setState({
         options: nextProps.options
@@ -66,6 +75,11 @@ class Field extends React.Component {
     if (nextProps.required !== this.props.required) {
       this.setState({
         required: nextProps.required
+      });
+    }
+    if (nextProps.text !== this.props.text) {
+      this.setState({
+        text: nextProps.text
       });
     }
     if (nextProps.validatorsEnabled !== this.props.validatorsEnabled) {
@@ -88,7 +102,7 @@ class Field extends React.Component {
   handleBlur(e) {
     const { formApi } = this.props;
 
-    if ("file" === this.props.type) {
+    if ("file" === this.state.type) {
       formApi.setValue(e.target.name + "Metadata", e.target.files[0]);
     }
 
@@ -97,12 +111,40 @@ class Field extends React.Component {
 
   handleChange(e) {
     const { formApi } = this.props;
+    let name = e.target.name;
+    let value = e.target.value;
 
-    if ("file" === this.props.type) {
-      formApi.setValue(e.target.name + "Metadata", e.target.files[0]);
+    switch (this.state.type) {
+      case "checkbox":
+        value = e.target.checked;
+        break;
+      case "file":
+        formApi.setValue(name + "Metadata", e.target.files[0]);
+        break;
+      case "multicheckbox":
+        let values = formApi.getValue(name);
+        let isChecked = e.target.checked;
+
+        if (!Array.isArray(values)) {
+          values = [];
+        }
+
+        if (isChecked) {
+          values.push(value);
+        } else {
+          const index = values.indexOf(value);
+          if (index > -1) {
+            values.splice(index, 1);
+          }
+        }
+
+        value = values;
+        break;
+      default:
+        value = e.target.value;
     }
 
-    formApi.handleOnChange(e.target.name, e.target.value);
+    formApi.handleOnChange(name, value);
   }
 
   render() {
@@ -110,63 +152,29 @@ class Field extends React.Component {
       addonAppendIcon,
       addonAppendText,
       addonPrependIcon,
-      addonPrependText,
-      disabledIfEmptyOptions,
-      label,
-      name,
-      optionsEmpty,
-      text,
-      type
+      addonPrependText
     } = this.props;
 
-    const { error, options, required, visible } = this.state;
-
-    let { disabled, value } = this.state;
+    const { error, label, name, required, text, type, visible } = this.state;
 
     if (!visible) {
       return "";
     }
 
-    let field = null;
+    // Vyrenderujeme si konkretni element
+    let input = null;
     switch (type) {
+      case "checkbox":
+        input = this.renderCheckbox();
+        break;
+      case "multicheckbox":
+        input = this.renderMultiCheckbox();
+        break;
       case "select":
-        if (true === disabledIfEmptyOptions && 0 === options.length) {
-          disabled = true;
-        }
-
-        if (0 === options.length) {
-          value = "";
-        }
-
-        field = (
-          <Input
-            disabled={disabled}
-            invalid={!!error}
-            name={name}
-            onBlur={this.handleBlur}
-            onChange={this.handleChange}
-            required={required}
-            type={type}
-            value={value || ""}
-          >
-            {optionsEmpty && <option value="">-</option>}
-            {this.renderOptions()}
-          </Input>
-        );
+        input = this.renderSelect();
         break;
       default:
-        field = (
-          <Input
-            disabled={disabled}
-            invalid={!!error}
-            name={name}
-            onBlur={this.handleBlur}
-            onChange={this.handleChange}
-            required={required}
-            type={type}
-            value={!value && value !== 0 ? "" : value}
-          />
-        );
+        input = this.renderInput();
     }
 
     return (
@@ -174,7 +182,7 @@ class Field extends React.Component {
         <FieldLabel name={name} required={required} text={label} />
         <InputGroup>
           <FieldAddonPrepend icon={addonPrependIcon} text={addonPrependText} />
-          {field}
+          {input}
           <FieldAddonAppend icon={addonAppendIcon} text={addonAppendText} />
           <FieldFeedback error={error} />
         </InputGroup>
@@ -183,14 +191,114 @@ class Field extends React.Component {
     );
   }
 
-  renderOptions() {
-    const { options, optionsKey, optionsValue } = this.props;
+  renderInput() {
+    let { disabled, error, name, required, type, value } = this.state;
 
-    return options.map(option => (
-      <option key={option[optionsKey]} value={option[optionsKey]}>
-        {option[optionsValue]}
-      </option>
-    ));
+    return (
+      <Input
+        disabled={disabled}
+        invalid={!!error}
+        name={name}
+        onBlur={this.handleBlur}
+        onChange={this.handleChange}
+        required={required}
+        type={type}
+        value={!value && value !== 0 ? "" : value}
+      />
+    );
+  }
+
+  renderCheckbox() {
+    let { disabled, error, label, name, required, value } = this.state;
+
+    value = 1 === value || true === value;
+
+    return (
+      <div>
+        <CustomInput
+          checked={!!value}
+          disabled={disabled}
+          id={name}
+          invalid={!!error}
+          label={label}
+          name={name}
+          onChange={this.handleChange}
+          required={required}
+          value={value}
+          type="checkbox"
+        />
+      </div>
+    );
+  }
+
+  renderMultiCheckbox() {
+    let { optionsKey, optionsValue } = this.props;
+    let { disabled, error, name, options, required, value } = this.state;
+
+    if (0 === options.length) {
+      return null;
+    }
+
+    const values = value || [];
+
+    return (
+      <div>
+        {options.map((option, index) => (
+          <CustomInput
+            checked={values.includes(option[optionsKey])}
+            disabled={disabled}
+            id={name + "-" + option[optionsKey]}
+            invalid={!!error}
+            key={index}
+            label={option[optionsValue]}
+            name={name}
+            onChange={this.handleChange}
+            required={required}
+            value={option[optionsKey]}
+            type="checkbox"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  renderSelect() {
+    let {
+      disabledIfEmptyOptions,
+      optionsKey,
+      optionsValue,
+      optionsEmpty
+    } = this.props;
+
+    let { disabled, error, name, options, required, type, value } = this.state;
+
+    if (true === disabledIfEmptyOptions && 0 === options.length) {
+      disabled = true;
+    }
+
+    if (0 === options.length) {
+      value = "";
+    }
+
+    return (
+      <Input
+        disabled={disabled}
+        invalid={!!error}
+        name={name}
+        options={options}
+        onChange={this.handleChange}
+        required={required}
+        type={type}
+        value={value}
+      >
+        {optionsEmpty && <option value="">-</option>}
+        {options.map(option => (
+          <option key={option[optionsKey]} value={option[optionsKey]}>
+            {option[optionsValue]}
+          </option>
+        ))}
+      </Input>
+    );
   }
 }
 
@@ -202,6 +310,7 @@ Field.defaultProps = {
   disabled: false,
   disabledIfEmptyOptions: true,
   disabledIfInvalid: [],
+  error: null,
   options: [],
   optionsEmpty: true,
   required: false,
@@ -213,7 +322,7 @@ Field.defaultProps = {
   validateOnChange: true,
   validators: [],
   validatorsEnabled: true,
-  value: "",
+  value: null,
   visible: true
 };
 

@@ -39,7 +39,6 @@ const withField = Component =>
 
         // Rebuild state when name changes
         this.fieldStateUpdate = () => {
-          console.log(this);
           this.setState(buildFieldState(formApi, name));
         };
       }

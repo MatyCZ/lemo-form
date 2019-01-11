@@ -1,7 +1,7 @@
 {
   "name": "lemo-form",
   "description": "Lemo form",
-  "version": "0.7.4",
+  "version": "1.0.0",
   "author": "Matej Szendi <matej.szendi@gmail.com>",
   "license": "MIT",
   "keywords": [
@@ -32,7 +32,7 @@
   "dependencies": {
     "@fortawesome/react-fontawesome": "0.x",
     "lemo-object": "0.x",
-    "lemo-validator": "0.x",
+    "lemo-validator": "1.x",
     "prop-types": "15.x",
     "react": "16.x",
     "react-dom": "16.x",
@@ -43,7 +43,7 @@
     "@babel/preset-env": "7.x",
     "@babel/preset-react": "7.x",
     "prettier": "1.x",
-    "rollup": "1.0.x",
+    "rollup": "1.x",
     "rollup-plugin-babel": "4.x",
     "rollup-plugin-commonjs": "9.x",
     "rollup-plugin-node-resolve": "4.x"
