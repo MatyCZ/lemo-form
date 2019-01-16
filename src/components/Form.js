@@ -322,6 +322,12 @@ class Form extends React.Component {
 
     const field = this.fields.get(name);
 
+    // Set value
+    this.values.set(name, value);
+
+    // Set touched
+    this.touched.set(name, true);
+
     // On normalize
     if (
       field.props.hasOwnProperty("onNormalize") &&
@@ -338,11 +344,8 @@ class Form extends React.Component {
       value = [];
     }
 
-    // Set value
+    // Update value
     this.values.set(name, value);
-
-    // Set touched
-    this.touched.set(name, true);
 
     // Validation
     if (true === field.props.validateOnChange) {
