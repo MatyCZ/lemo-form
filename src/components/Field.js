@@ -289,7 +289,7 @@ class Field extends React.Component {
         onChange={this.handleChange}
         required={required}
         type={type}
-        value={value}
+        value={value || ""}
       >
         {optionsEmpty && <option value="">-</option>}
         {options.map(option => (

@@ -327,7 +327,7 @@ class Form extends React.Component {
       field.props.hasOwnProperty("onNormalize") &&
       typeof field.props.onNormalize === "function"
     ) {
-      value = field.props.onNormalize(value, field.state.value);
+      value = field.props.onNormalize(this.handleApi);
     }
 
     // Default value for specific field types
