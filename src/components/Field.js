@@ -148,13 +148,7 @@ class Field extends React.Component {
   }
 
   render() {
-    const {
-      addonAppendIcon,
-      addonAppendText,
-      addonPrependIcon,
-      addonPrependText
-    } = this.props;
-
+    const { addonAppendIcon, addonAppendText, addonPrependIcon, addonPrependText } = this.props;
     const { error, label, name, required, text, type, visible } = this.state;
 
     if (!visible) {
@@ -192,23 +186,32 @@ class Field extends React.Component {
   }
 
   renderInput() {
+    let { children, className, innerRef, invalid, plaintext, size, tag, valid } = this.props;
     let { disabled, error, name, required, type, value } = this.state;
 
     return (
       <Input
+        children={children}
+        className={className}
         disabled={disabled}
-        invalid={!!error}
+        innerRef={innerRef}
+        invalid={invalid || !!error}
         name={name}
         onBlur={this.handleBlur}
         onChange={this.handleChange}
+        plaintext={plaintext}
         required={required}
+        size={size}
+        tag={tag}
         type={type}
+        valid={valid}
         value={!value && value !== 0 ? "" : value}
       />
     );
   }
 
   renderCheckbox() {
+    let { className, innerRef, invalid, plaintext, size, tag, valid } = this.props;
     let { disabled, error, label, name, required, value } = this.state;
 
     value = 1 === value || true === value;
@@ -217,13 +220,20 @@ class Field extends React.Component {
       <div>
         <CustomInput
           checked={!!value}
+          children={children}
+          className={className}
           disabled={disabled}
           id={name}
-          invalid={!!error}
+          innerRef={innerRef}
+          invalid={invalid || !!error}
           label={label}
           name={name}
           onChange={this.handleChange}
+          plaintext={plaintext}
           required={required}
+          size={size}
+          tag={tag}
+          valid={valid}
           value={value}
           type="checkbox"
         />
@@ -232,7 +242,7 @@ class Field extends React.Component {
   }
 
   renderMultiCheckbox() {
-    let { optionsKey, optionsValue } = this.props;
+    let { className, innerRef, invalid, optionsKey, optionsValue, plaintext, size, tag, valid } = this.props;
     let { disabled, error, name, options, required, value } = this.state;
 
     if (0 === options.length) {
@@ -246,14 +256,20 @@ class Field extends React.Component {
         {options.map((option, index) => (
           <CustomInput
             checked={values.includes(option[optionsKey])}
+            className={className}
             disabled={disabled}
             id={name + "-" + option[optionsKey]}
-            invalid={!!error}
+            innerRef={innerRef}
+            invalid={invalid || !!error}
             key={index}
             label={option[optionsValue]}
             name={name}
             onChange={this.handleChange}
+            plaintext={plaintext}
             required={required}
+            size={size}
+            tag={tag}
+            valid={valid}
             value={option[optionsKey]}
             type="checkbox"
           />
@@ -264,12 +280,19 @@ class Field extends React.Component {
 
   renderSelect() {
     let {
+      children,
+      className,
       disabledIfEmptyOptions,
+      innerRef,
+      invalid,
       optionsKey,
       optionsValue,
-      optionsEmpty
+      optionsEmpty,
+      plaintext,
+      size,
+      tag,
+      valid
     } = this.props;
-
     let { disabled, error, name, options, required, type, value } = this.state;
 
     if (true === disabledIfEmptyOptions && 0 === options.length) {
@@ -282,13 +305,20 @@ class Field extends React.Component {
 
     return (
       <Input
+        children={children}
+        className={className}
         disabled={disabled}
-        invalid={!!error}
+        innerRef={innerRef}
+        invalid={invalid || !!error}
         name={name}
         options={options}
         onChange={this.handleChange}
+        plaintext={plaintext}
         required={required}
+        size={size}
+        tag={tag}
         type={type}
+        valid={valid}
         value={value || ""}
       >
         {optionsEmpty && <option value="">-</option>}
@@ -327,22 +357,18 @@ Field.defaultProps = {
 };
 
 Field.propTypes = {
-  addonAppendIcon: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array,
-    PropTypes.string
-  ]),
+  addon: PropTypes.bool,
+  addonAppendIcon: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
   addonAppendText: PropTypes.string,
-  addonPrependIcon: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array,
-    PropTypes.string
-  ]),
+  addonPrependIcon: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
   addonPrependText: PropTypes.string,
+  children: PropTypes.node,
+  className: PropTypes.string,
   disabled: PropTypes.bool,
   disabledIfEmptyOptions: PropTypes.bool,
   disabledIfInvalid: PropTypes.array,
   error: PropTypes.string,
+  innerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onBlur: PropTypes.func,
@@ -355,12 +381,15 @@ Field.propTypes = {
   optionsEmpty: PropTypes.bool,
   optionsKey: PropTypes.string,
   optionsValue: PropTypes.string,
+  plaintext: PropTypes.bool,
   required: PropTypes.bool,
   requiredIfNotEmpty: PropTypes.array,
-  ref: PropTypes.func,
+  size: PropTypes.string,
+  tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   text: PropTypes.string,
   touched: PropTypes.bool,
   type: PropTypes.string,
+  valid: PropTypes.bool,
   validateIfChange: PropTypes.array,
   validateOnChange: PropTypes.bool,
   validators: PropTypes.array,

@@ -58,13 +58,9 @@ const withField = Component =>
   );
 
 const withFieldApi = field => Component =>
-  withFormApi(({ formApi, ...props }) => (
-    <Component fieldApi={buildFieldApi(formApi, field)} {...props} />
-  ));
+  withFormApi(({ formApi, ...props }) => <Component fieldApi={buildFieldApi(formApi, field)} {...props} />);
 
 const withFieldState = field => Component =>
-  withFormApi(({ formApi, ...props }) => (
-    <Component fieldState={buildFieldState(formApi, field)} {...props} />
-  ));
+  withFormApi(({ formApi, ...props }) => <Component fieldState={buildFieldState(formApi, field)} {...props} />);
 
 export { withField, withFieldApi, withFieldState };

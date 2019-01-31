@@ -207,10 +207,7 @@ class Form extends React.Component {
     this.handleChangeValue(name, value);
 
     // Field - On blur
-    if (
-      field.props.hasOwnProperty("onBlur") &&
-      typeof field.props.onBlur === "function"
-    ) {
+    if (field.props.hasOwnProperty("onBlur") && typeof field.props.onBlur === "function") {
       field.props.onBlur(this.handleApi);
     }
 
@@ -224,10 +221,7 @@ class Form extends React.Component {
     }
 
     // Form - On blur
-    if (
-      this.props.hasOwnProperty("onBlur") &&
-      typeof this.props.onBlur === "function"
-    ) {
+    if (this.props.hasOwnProperty("onBlur") && typeof this.props.onBlur === "function") {
       this.props.onBlur(this.handleApi);
     }
   }
@@ -238,10 +232,7 @@ class Form extends React.Component {
     this.handleChangeValue(name, value);
 
     // Field - On change
-    if (
-      field.props.hasOwnProperty("onChange") &&
-      typeof field.props.onChange === "function"
-    ) {
+    if (field.props.hasOwnProperty("onChange") && typeof field.props.onChange === "function") {
       field.props.onChange(this.handleApi);
     }
 
@@ -255,10 +246,7 @@ class Form extends React.Component {
     }
 
     // Form - On change
-    if (
-      this.props.hasOwnProperty("onChange") &&
-      typeof this.props.onChange === "function"
-    ) {
+    if (this.props.hasOwnProperty("onChange") && typeof this.props.onChange === "function") {
       this.props.onChange(this.handleApi);
     }
   }
@@ -326,13 +314,12 @@ class Form extends React.Component {
     this.values.set(name, value);
 
     // Set touched
-    this.touched.set(name, true);
+    if (null !== value && value.length > 0) {
+      this.touched.set(name, true);
+    }
 
     // On normalize
-    if (
-      field.props.hasOwnProperty("onNormalize") &&
-      typeof field.props.onNormalize === "function"
-    ) {
+    if (field.props.hasOwnProperty("onNormalize") && typeof field.props.onNormalize === "function") {
       value = field.props.onNormalize(this.handleApi);
     }
 
@@ -348,7 +335,7 @@ class Form extends React.Component {
     this.values.set(name, value);
 
     // Validation
-    if (true === field.props.validateOnChange) {
+    if (true === field.props.validateOnChange && true === this.touched.has(name)) {
       this.handleValidate(name);
     }
 
@@ -357,13 +344,11 @@ class Form extends React.Component {
       await this.fieldsTriggerDisabled.get(name).forEach(nameToDisable => {
         if (this.fieldsDisabledIfInvalid.has(nameToDisable)) {
           let isValid = true;
-          this.fieldsDisabledIfInvalid
-            .get(nameToDisable)
-            .forEach(nameToCheckValue => {
-              if (true === isValid && this.errors.has(nameToCheckValue)) {
-                isValid = false;
-              }
-            });
+          this.fieldsDisabledIfInvalid.get(nameToDisable).forEach(nameToCheckValue => {
+            if (true === isValid && this.errors.has(nameToCheckValue)) {
+              isValid = false;
+            }
+          });
 
           if (true === isValid) {
             this.fields.get(nameToDisable).setState({
@@ -438,10 +423,7 @@ class Form extends React.Component {
       return null;
     }
 
-    if (
-      "checkbox" !== field.state.type &&
-      "multicheckbox" !== field.state.type
-    ) {
+    if ("checkbox" !== field.state.type && "multicheckbox" !== field.state.type) {
       value = value.trim();
     }
 
@@ -451,10 +433,7 @@ class Form extends React.Component {
           error = validator.validate(value, this.values);
 
           field.props.validateIfChange.forEach(nameToValidate => {
-            if (
-              nameToValidate !== nameToSkip &&
-              this.fields.has(nameToValidate)
-            ) {
+            if (nameToValidate !== nameToSkip && this.fields.has(nameToValidate)) {
               if (this.touched.has(nameToValidate)) {
                 this.handleValidate(nameToValidate, name, true);
               }
@@ -583,11 +562,16 @@ Form.defaultProps = {
 };
 
 Form.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  inline: PropTypes.bool,
+  innerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
   noValidate: PropTypes.bool,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,
   onSubmit: PropTypes.func.isRequired,
   onValidate: PropTypes.func,
+  tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   values: PropTypes.object
 };
 

@@ -32,11 +32,7 @@ class FieldAddonAppend extends React.Component {
 }
 
 FieldAddonAppend.propTypes = {
-  icon: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array,
-    PropTypes.string
-  ]),
+  icon: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
   text: PropTypes.string
 };
 
