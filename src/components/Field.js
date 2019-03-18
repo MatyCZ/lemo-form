@@ -1,3 +1,7 @@
+import PropTypes from "prop-types";
+import React from "react";
+import { CustomInput, FormGroup, Input, InputGroup } from "reactstrap";
+
 // Components
 import FieldAddonAppend from "./FieldAddonAppend";
 import FieldAddonPrepend from "./FieldAddonPrepend";
@@ -7,15 +11,6 @@ import FieldText from "./FieldText";
 
 // HOC
 import withFormApi from "../hocs/withFormApi";
-
-// PropTypes
-import PropTypes from "prop-types";
-
-// React
-import React from "react";
-
-// Reactstrap
-import { CustomInput, FormGroup, Input, InputGroup } from "reactstrap";
 
 class Field extends React.Component {
   constructor(props) {
@@ -211,7 +206,7 @@ class Field extends React.Component {
   }
 
   renderCheckbox() {
-    let { className, innerRef, invalid, plaintext, size, tag, valid } = this.props;
+    let { children, className, innerRef, invalid, plaintext, size, tag, valid } = this.props;
     let { disabled, error, label, name, required, value } = this.state;
 
     value = 1 === value || true === value;

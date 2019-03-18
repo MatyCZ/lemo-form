@@ -1,14 +1,12 @@
+import PropTypes from "prop-types";
+import React from "react";
+import has from "has-value";
+import get from "get-value";
+import set from "set-value";
+import unset from "unset-value";
+
 // Components
 import FormContext from "./FormContext";
-
-// Lemo
-import { DataMap } from "lemo-object";
-
-// PropTypes
-import PropTypes from "prop-types";
-
-// React
-import React from "react";
 
 // Reactstrap
 import { Form as ReactstrapForm } from "reactstrap";
@@ -22,14 +20,15 @@ class Form extends React.Component {
       isSubmitting: false
     };
 
-    this.errors = new DataMap();
+    this.errors = {};
     this.fields = new Map();
     this.fieldsDisabledIfInvalid = new Map();
     this.fieldsRequiredIfNotEmpty = new Map();
     this.fieldsTriggerDisabled = new Map();
-    this.touched = new DataMap();
-    this.values = new DataMap(props.values);
+    this.touched = {};
+    this.setValues(props.values);
 
+    // Nastavime hodnoty
     this.getError = this.getError.bind(this);
     this.getErrors = this.getErrors.bind(this);
     this.getField = this.getField.bind(this);
@@ -53,11 +52,12 @@ class Form extends React.Component {
     this.setField = this.setField.bind(this);
     this.setTouched = this.setTouched.bind(this);
     this.setValue = this.setValue.bind(this);
+    this.setValues = this.setValues.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.values !== this.props.values) {
-      this.values = new DataMap(nextProps.values);
+      this.setValues(nextProps.values);
 
       if (0 === Object.keys(nextProps.values).length) {
         this.fields.forEach(field => {
@@ -82,15 +82,15 @@ class Form extends React.Component {
   }
 
   getError(name) {
-    if (!this.errors.has(name)) {
+    if (!this.hasError(name)) {
       return null;
     }
 
-    return this.errors.get(name);
+    return get(this.errors, name);
   }
 
   getErrors() {
-    return this.errors.object;
+    return this.errors;
   }
 
   getField(name) {
@@ -102,27 +102,27 @@ class Form extends React.Component {
   }
 
   getTouched(name) {
-    if (!this.touched.has(name)) {
+    if (!this.hasTouched(name)) {
       return null;
     }
 
-    return this.touched.get(name);
+    return get(this.touched, name);
   }
 
   getValue(name) {
-    if (!this.values.has(name)) {
+    if (!this.hasValue(name)) {
       return null;
     }
 
-    return this.values.get(name);
+    return get(this.values, name);
   }
 
   getValues() {
-    return this.values.object;
+    return this.values;
   }
 
   hasError(name) {
-    return this.errors.has(name);
+    return has(this.errors, name);
   }
 
   hasField(name) {
@@ -130,15 +130,15 @@ class Form extends React.Component {
   }
 
   hasTouched(name) {
-    return this.touched.has(name);
+    return has(this.touched, name);
   }
 
   hasValue(name) {
-    return this.values.has(name);
+    return has(this.values, name);
   }
 
   removeError(name) {
-    this.errors.delete(name);
+    unset(this.errors, name);
   }
 
   removeField(name) {
@@ -146,15 +146,24 @@ class Form extends React.Component {
   }
 
   removeTouched(name) {
-    this.touched.delete(name);
+    unset(this.touched, name);
   }
 
   removeValue(name) {
-    this.values.delete(name);
+    unset(this.values, name);
   }
 
   setError(name, error) {
     this.handleChangeError(name, error);
+  }
+
+  setErrors(errors) {
+    this.errors = {};
+    Object.keys(errors).forEach(key => {
+      let error = errors[key];
+
+      set(this.errors, key, error);
+    });
   }
 
   setField(name, field) {
@@ -178,27 +187,36 @@ class Form extends React.Component {
       this.fieldsRequiredIfNotEmpty.set(name, field.props.requiredIfNotEmpty);
     }
 
-    if ("checkbox" === field.state.type) {
-      this.values.set(name, false);
+    if ("checkbox" === field.state.type && !has(this.values, name)) {
+      set(this.values, name, false);
     }
-    if ("multicheckbox" === field.state.type) {
-      this.values.set(name, []);
+    if ("multicheckbox" === field.state.type && !has(this.values, name)) {
+      set(this.values, name, []);
     }
 
     // Default value
-    if (this.values.has(name)) {
+    if (has(this.values, name)) {
       field.setState({
-        value: this.values.get(name)
+        value: get(this.values, name)
       });
     }
   }
 
   setTouched(name, value) {
-    this.touched.set(name, value);
+    set(this.touched, name, value);
   }
 
   setValue(name, value) {
     this.handleChangeValue(name, value);
+  }
+
+  setValues(values) {
+    this.values = {};
+    Object.keys(values).forEach(key => {
+      let value = values[key];
+
+      set(this.values, key, value);
+    });
   }
 
   handleOnBlur(name, value) {
@@ -215,7 +233,7 @@ class Form extends React.Component {
     if (
       field.props.hasOwnProperty("onBlurIfValid") &&
       typeof field.props.onBlurIfValid === "function" &&
-      !this.errors.get(name)
+      !get(this.errors, name)
     ) {
       field.props.onBlurIfValid(this.handleApi);
     }
@@ -240,7 +258,7 @@ class Form extends React.Component {
     if (
       field.props.hasOwnProperty("onChangeIfValid") &&
       typeof field.props.onChangeIfValid === "function" &&
-      !this.errors.get(name)
+      !get(this.errors, name)
     ) {
       field.props.onChangeIfValid(this.handleApi);
     }
@@ -262,7 +280,7 @@ class Form extends React.Component {
       this.handleValidate(name);
     });
 
-    if (this.errors.empty()) {
+    if (0 === get(this.errors).keys().length) {
       await this.props.onSubmit(this.handleApi);
       return;
     }
@@ -288,9 +306,9 @@ class Form extends React.Component {
     error = error || null;
 
     if (!error) {
-      this.errors.delete(name);
+      unset(this.errors, name);
     } else {
-      this.errors.set(name, error);
+      set(this.errors, name, error);
     }
 
     if (this.fields.has(name)) {
@@ -304,18 +322,18 @@ class Form extends React.Component {
     value = value || null;
 
     if (!this.fields.has(name)) {
-      this.values.set(name, value);
+      set(this.values, name, value);
       return false;
     }
 
     const field = this.fields.get(name);
 
     // Set value
-    this.values.set(name, value);
+    set(this.values, name, value);
 
     // Set touched
     if (null !== value && value.length > 0) {
-      this.touched.set(name, true);
+      set(this.touched, name, true);
     }
 
     // On normalize
@@ -332,10 +350,10 @@ class Form extends React.Component {
     }
 
     // Update value
-    this.values.set(name, value);
+    set(this.values, name, value);
 
     // Validation
-    if (true === field.props.validateOnChange && true === this.touched.has(name)) {
+    if (true === field.props.validateOnChange && true === has(this.touched, name)) {
       this.handleValidate(name);
     }
 
@@ -345,7 +363,7 @@ class Form extends React.Component {
         if (this.fieldsDisabledIfInvalid.has(nameToDisable)) {
           let isValid = true;
           this.fieldsDisabledIfInvalid.get(nameToDisable).forEach(nameToCheckValue => {
-            if (true === isValid && this.errors.has(nameToCheckValue)) {
+            if (true === isValid && has(this.errors, nameToCheckValue)) {
               isValid = false;
             }
           });
@@ -355,8 +373,8 @@ class Form extends React.Component {
               disabled: false
             });
           } else {
-            this.errors.delete(nameToDisable);
-            this.values.set(nameToDisable, "");
+            unset(this.errors, nameToDisable);
+            set(this.values, nameToDisable, "");
             this.fields.get(nameToDisable).setState({
               error: null,
               disabled: true,
@@ -376,7 +394,7 @@ class Form extends React.Component {
       let isRequired = false;
       namesToCheck.forEach(nameToCheck => {
         if (false === isRequired) {
-          if (!!this.values.get(nameToCheck)) {
+          if (!!get(this.values, nameToCheck)) {
             isRequired = true;
           }
         }
@@ -407,8 +425,8 @@ class Form extends React.Component {
 
     // Update field state
     field.setState({
-      touched: this.touched.get(name),
-      value: this.values.get(name)
+      touched: get(this.touched, name),
+      value: get(this.values, name)
     });
 
     return this;
@@ -417,7 +435,7 @@ class Form extends React.Component {
   handleValidate(name, nameToSkip = null, isRecursive = false) {
     let error = null;
     let field = this.fields.get(name);
-    let value = this.values.get(name) || "";
+    let value = get(this.values, name) || "";
 
     if (false === field.state.validatorsEnabled) {
       return null;
@@ -434,7 +452,7 @@ class Form extends React.Component {
 
           field.props.validateIfChange.forEach(nameToValidate => {
             if (nameToValidate !== nameToSkip && this.fields.has(nameToValidate)) {
-              if (this.touched.has(nameToValidate)) {
+              if (has(this.touched, nameToValidate)) {
                 this.handleValidate(nameToValidate, name, true);
               }
             }
@@ -474,8 +492,10 @@ class Form extends React.Component {
       removeTouched: this.removeTouched,
       removeValue: this.removeValue,
       setError: this.setError,
+      setErrors: this.setErrors,
       setTouched: this.setTouched,
-      setValue: this.setValue
+      setValue: this.setValue,
+      setValues: this.setValues
     };
   }
 
@@ -501,9 +521,11 @@ class Form extends React.Component {
         removeTouched: this.removeTouched,
         removeValue: this.removeValue,
         setError: this.setError,
+        setErrors: this.setErrors,
         setField: this.setField,
         setTouched: this.setTouched,
-        setValue: this.setValue
+        setValue: this.setValue,
+        setValues: this.setValues
       }
     };
   }

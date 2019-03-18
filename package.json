@@ -1,7 +1,7 @@
 {
   "name": "lemo-form",
   "description": "Lemo form",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "author": "Matej Szendi <matej.szendi@gmail.com>",
   "license": "MIT",
   "keywords": [
@@ -30,22 +30,25 @@
     "url": "https://github.com/MatyCZ/lemo-form"
   },
   "dependencies": {
-    "@fortawesome/react-fontawesome": "0.x",
-    "lemo-object": "0.x",
-    "lemo-validator": "1.x",
-    "prop-types": "15.x",
-    "react": "16.x",
-    "react-dom": "16.x",
-    "reactstrap": "7.x"
+    "@fortawesome/react-fontawesome": "^0.1",
+    "get-value": "^3.0",
+    "has-value": "^2.0",
+    "lemo-validator": "^1.0",
+    "prop-types": "^15.7",
+    "react": "^16.8",
+    "react-dom": "^16.8",
+    "reactstrap": "^7.1",
+    "set-value": "^3.0",
+    "unset-value": "^1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.x",
-    "@babel/preset-env": "7.x",
-    "@babel/preset-react": "7.x",
-    "prettier": "1.x",
-    "rollup": "1.x",
-    "rollup-plugin-babel": "4.x",
-    "rollup-plugin-commonjs": "9.x",
-    "rollup-plugin-node-resolve": "4.x"
+    "@babel/core": "^7.2",
+    "@babel/preset-env": "^7.3",
+    "@babel/preset-react": "^7.0",
+    "prettier": "^1.16",
+    "rollup": "^1.6",
+    "rollup-plugin-babel": "^4.3",
+    "rollup-plugin-commonjs": "^9.2",
+    "rollup-plugin-node-resolve": "^4.0"
   }
 }

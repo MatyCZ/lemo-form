@@ -6,7 +6,6 @@ import packageJson from './package.json';
 
 const globals = {
     '@fortawesome/react-fontawesome': 'FontAwesomeIcon',
-    'lemo-object': 'LemoObject',
     'prop-types': 'PropTypes',
     'react': 'React',
     'react-dom': 'ReactDOM',
