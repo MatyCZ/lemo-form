@@ -6,10 +6,14 @@ import packageJson from './package.json';
 
 const globals = {
     '@fortawesome/react-fontawesome': 'FontAwesomeIcon',
+    'has-value': 'has',
+    'get-value': 'get',
     'prop-types': 'PropTypes',
     'react': 'React',
     'react-dom': 'ReactDOM',
-    'reactstrap': 'Reactstrap',
+    'reactstrap': 'reactstrap',
+    'set-value': 'set',
+    'unset-value': 'unset',
 };
 
 export default {
