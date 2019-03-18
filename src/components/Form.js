@@ -59,7 +59,7 @@ class Form extends React.Component {
     if (nextProps.values !== this.props.values) {
       this.setValues(nextProps.values);
 
-      if (0 === Object.keys(nextProps.values).length) {
+      if (0 === Object.keys(nextProps.values || []).length) {
         this.fields.forEach(field => {
           field.setState({
             error: null,
@@ -159,7 +159,7 @@ class Form extends React.Component {
 
   setErrors(errors) {
     this.errors = {};
-    Object.keys(errors).forEach(key => {
+    Object.keys(errors || {}).forEach(key => {
       let error = errors[key];
 
       set(this.errors, key, error);
@@ -212,7 +212,7 @@ class Form extends React.Component {
 
   setValues(values) {
     this.values = {};
-    Object.keys(values).forEach(key => {
+    Object.keys(values || {}).forEach(key => {
       let value = values[key];
 
       set(this.values, key, value);
@@ -280,7 +280,7 @@ class Form extends React.Component {
       this.handleValidate(name);
     });
 
-    if (0 === get(this.errors).keys().length) {
+    if (0 === Object.keys(this.errors).length) {
       await this.props.onSubmit(this.handleApi);
       return;
     }
