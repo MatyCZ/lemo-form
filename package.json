@@ -2,7 +2,7 @@
   "name": "lemo-form",
   "description": "Lemo form",
   "version": "1.1.0",
-  "author": "Matej Szendi <matej.szendi@gmail.com>",
+  "author": "Matej Szendi",
   "license": "MIT",
   "keywords": [
     "bootstrap",
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/MatyCZ/lemo-form"
+    "url": "https://github.com/MatyCZ/react-lemo-form"
   },
   "dependencies": {
     "@fortawesome/react-fontawesome": "^0.1",
